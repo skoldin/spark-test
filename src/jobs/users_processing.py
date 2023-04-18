@@ -13,7 +13,7 @@ sys.path.append(utils_dir)
 from validation import validate_user_data
 
 
-RAW_USERS_DATA = os.path.join(grandparent_dir, 'data', 'raw', 'users', 'users.csv')
+RAW_USERS_DATA = os.path.join(grandparent_dir, 'data', 'raw', 'users', '*.csv')
 PROCESSED_VALID_USERS_DATA = os.path.join(grandparent_dir, 'data', 'core', 'users')
 PROCESSED_INVALID_USERS_DATA = os.path.join(grandparent_dir, 'data', 'invalid', 'users')
 
@@ -41,3 +41,5 @@ valid, invalid = validate_user_data(input)
 
 valid.write.mode('overwrite').partitionBy('country').parquet(PROCESSED_VALID_USERS_DATA)
 invalid.write.mode('overwrite').parquet(PROCESSED_INVALID_USERS_DATA)
+
+spark.stop()

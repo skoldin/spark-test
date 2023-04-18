@@ -12,7 +12,7 @@ sys.path.append(utils_dir)
 
 from validation import validate_user_data_rdd
 
-RAW_USERS_DATA = os.path.join(grandparent_dir, 'data', 'raw', 'users', 'users.csv')
+RAW_USERS_DATA = os.path.join(grandparent_dir, 'data', 'raw', 'users', '*.csv')
 PROCESSED_VALID_USERS_DATA = os.path.join(grandparent_dir, 'data', 'core', 'users')
 PROCESSED_INVALID_USERS_DATA = os.path.join(grandparent_dir, 'data', 'invalid', 'users')
 
@@ -60,4 +60,4 @@ invalid_df = spark.createDataFrame(invalid, schema=schema)
 valid_df.write.mode('overwrite').partitionBy('country').parquet(PROCESSED_VALID_USERS_DATA)
 invalid_df.write.mode('overwrite').parquet(PROCESSED_INVALID_USERS_DATA)
 
-
+spark.stop()
