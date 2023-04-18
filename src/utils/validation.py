@@ -7,23 +7,10 @@ from datetime import datetime
 
 email_pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
 date_pattern = r'^\d{2}\.\d{2}\.\d{4}T\d{2}:\d{2}:\d{2}$'
+# assuming we're working for newtube
+url_pattern = r'^https:\/\/newtube\.com\/video\?v=[\da-zA-Z]{4,}$'
 
-
-# validate data and drop duplicates
-def validate_user_data(df):
-    # assume each column is required
-    valid_countries = ['US', 'CA', 'UK']
-    boolean_values = [0, 1]
-    validation_rules = [
-        (col('id').isNotNull(), "id"),
-        (col('fname').isNotNull() & (col('fname') != ''), 'fname'),
-        (col('lname').isNotNull() & (col('lname') != ''), 'lname'),
-        (col('email').rlike(email_pattern), 'email'),
-        (col('country').isin(valid_countries), 'country'),
-        (col('subscription').isin(boolean_values), 'subscription'),
-        (col('updated').rlike(date_pattern), 'updated')
-    ]
-
+def validate_df(df, validation_rules):
     # introduce new is_valid column which we will use to sort the validated data
     df = df.withColumn('is_valid', lit(True))
 
@@ -35,6 +22,28 @@ def validate_user_data(df):
     valid = df.filter(col('is_valid'))
     invalid = df.filter(~col('is_valid'))
 
+    valid = valid.drop('is_valid')
+    invalid = invalid.drop('is_valid')
+
+    return valid, invalid
+
+# validate data and drop duplicates
+def validate_user_data(df):
+    # assume each column is required
+    valid_countries = ['US', 'CA', 'UK']
+    boolean_values = [0, 1]
+    validation_rules = [
+        (col('id').isNotNull(), 'id'),
+        (col('fname').isNotNull() & (col('fname') != ''), 'fname'),
+        (col('lname').isNotNull() & (col('lname') != ''), 'lname'),
+        (col('email').rlike(email_pattern), 'email'),
+        (col('country').isin(valid_countries), 'country'),
+        (col('subscription').isin(boolean_values), 'subscription'),
+        (col('updated').rlike(date_pattern), 'updated')
+    ]
+
+    valid, invalid = validate_df(df, validation_rules)
+
     # in case of duplicate user ids, keep the latest updated record
     valid = valid.withColumn('updated_ts', to_timestamp(col('updated'), "dd.MM.yyyy'T'HH:mm:ss"))
     window_spec = Window.partitionBy('id').orderBy(desc('updated_ts'))
@@ -42,9 +51,6 @@ def validate_user_data(df):
         .filter(col('row_number') == 1) \
         .drop('row_number') \
         .drop('updated_ts')
-
-    valid = valid.drop('is_valid')
-    invalid = invalid.drop('is_valid')
 
     return valid, invalid
 
@@ -93,3 +99,17 @@ def validate_user_data_rdd(rdd):
         valid = valid.filter(is_latest_updated)
 
     return valid, invalid
+
+
+def validate_video_data(df):
+    boolean_values = [0, 1]
+    validation_rules = [
+        (col('id').isNotNull(), 'id'),
+        (col('name').isNotNull() & (col('name') != ''), 'name'),
+        (col('url').rlike(url_pattern), 'url'),
+        (col('creation_timestamp').isNotNull() & (col('creation_timestamp') > 0), 'creation_timestamp'),
+        (col('creator_id').isNotNull(), 'creator_id'),
+        (col('private').isin(boolean_values), 'private')
+    ]
+
+    return validate_df(df, validation_rules)
