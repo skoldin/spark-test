@@ -42,11 +42,14 @@ def validate_user_data_rdd(rdd):
     boolean = [0, 1]
 
     def is_valid(row):
-        user_id, fname, lname, email, country, subscription, categories, updated = row
+        try:
+            user_id, fname, lname, email, country, subscription, categories, updated = row
+        except ValueError:
+            return False
 
         return (user_id and fname and lname and email and country and subscription and updated
                 and email_pattern.match(email) and date_pattern.match(updated)
-                and country in valid_countries and str(subscription) in boolean)
+                and country in valid_countries and int(subscription) in boolean)
 
     valid = rdd.filter(is_valid)
     invalid = rdd.filter(lambda row: not is_valid(row))
