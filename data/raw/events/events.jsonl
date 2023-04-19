@@ -8,7 +8,7 @@
 {"user_id":3,"video_id":101,"event":"created","timestamp":1642664347,"tags":["travel","bicycle","mountains"]}
 {"user_id":6,"video_id":101,"event":"commented","timestamp":1642675347,"comment":"there is no mountains in video:("}
 {"user_id":2,"video_id":101,"event":"remove_tags","timestamp":1642689347,"tags":["mountains"]}
-{"events":[{"user_id":0,"video_id":101,"event":"like","timestamp":1642690000},{"user_id":7,"video_id":101,"event":"like","timestamp":1642695000}]}
+{"user_id":2,"video_id":101,"event":"remove_tags","timestamp":1642689347,"tags":["mountains"]}
 {"user_id":1,"video_id":101,"event":"like","timestamp":1642703000}
 {"user_id":6,"video_id":101,"event":"like","timestamp":1642753000}
 {"user_id":5,"video_id":101,"event":"like","timestamp":1642783000}

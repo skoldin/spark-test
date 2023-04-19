@@ -113,3 +113,15 @@ def validate_video_data(df):
     ]
 
     return validate_df(df, validation_rules)
+
+
+def validate_event_data(df):
+    valid_events = ['created', 'like', 'add_tags', 'remove_tags', 'commented']
+    validation_rules = [
+        (col('user_id').isNotNull(), 'user_id'),
+        (col('video_id').isNotNull(), 'video_id'),
+        (col('event').isNotNull() & (col('event').isin(valid_events)), 'event'),
+        (col('timestamp').isNotNull() & (col('timestamp') > 0), 'timestamp'),
+    ]
+
+    return validate_df(df, validation_rules)
