@@ -1,19 +1,13 @@
-import re
-
 from pyspark.sql import SparkSession, Row
-from pyspark.sql.types import StructType, StructField, IntegerType, StringType, ArrayType, LongType
-from pyspark.sql.functions import from_json, explode, col, when, array, lit
+from pyspark.sql.types import StructType, StructField, IntegerType, StringType, LongType
 import os
-import sys
 import json
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 grandparent_dir = os.path.dirname(parent_dir)
-utils_dir = os.path.join(parent_dir, 'utils')
-sys.path.append(utils_dir)
 
-from validation import validate_event_data
+from src.utils.validation import validate_event_data
 
 RAW_EVENTS_DATA = os.path.join(grandparent_dir, 'data', 'raw', 'events', '*.jsonl')
 PROCESSED_VALID_EVENTS_DATA = os.path.join(grandparent_dir, 'data', 'core', 'events')
