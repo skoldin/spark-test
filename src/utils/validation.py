@@ -67,9 +67,6 @@ def validate_user_data_rdd(rdd):
         except ValueError:
             return False
 
-        print(subscription, updated)
-        print((bool(isinstance(user_id, int) and fname and lname and email and country and updated)))
-
         return (isinstance(user_id, int) and fname and lname and email and country and updated
                 and email_pattern_compiled.match(email) and date_pattern_compiled.match(updated)
                 and country in valid_countries and int(subscription) in boolean_values)

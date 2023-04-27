@@ -6,11 +6,8 @@ import sys
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 grandparent_dir = os.path.dirname(parent_dir)
-utils_dir = os.path.join(parent_dir, 'utils')
 
-sys.path.append(utils_dir)
-
-from validation import validate_user_data_rdd
+from src.utils.validation import validate_user_data_rdd
 
 RAW_USERS_DATA = os.path.join(grandparent_dir, 'data', 'raw', 'users', '*.csv')
 PROCESSED_VALID_USERS_DATA = os.path.join(grandparent_dir, 'data', 'core', 'users')

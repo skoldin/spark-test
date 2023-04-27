@@ -29,7 +29,7 @@ schema = StructType([
 input = spark.read \
     .option('header', 'true') \
     .schema(schema) \
-    .csv(str(RAW_VIDEOS_DATA))
+    .csv(RAW_VIDEOS_DATA)
 
 valid, invalid = validate_video_data(input)
 
